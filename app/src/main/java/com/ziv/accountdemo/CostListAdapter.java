@@ -13,13 +13,13 @@ import java.util.List;
  * Created by Ziv_A on 2017/3/4.
  */
 
-public class CostAdapter extends BaseAdapter {
+public class CostListAdapter extends BaseAdapter {
     private List<CostBean> mList;
     private Context mContext;
 
     private LayoutInflater mInflater;
 
-    public CostAdapter(Context context, List<CostBean> list) {
+    public CostListAdapter(Context context, List<CostBean> list) {
         mList = list;
         mContext = context;
         mInflater = LayoutInflater.from(context);

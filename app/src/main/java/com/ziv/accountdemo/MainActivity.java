@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         mCostBeanList = new ArrayList<>();
         ListView costList = (ListView) findViewById(R.id.lv_main);
         initCostData();
-        costList.setAdapter(new CostAdapter(this, mCostBeanList));
+        costList.setAdapter(new CostListAdapter(this, mCostBeanList));
     }
 
     /**
