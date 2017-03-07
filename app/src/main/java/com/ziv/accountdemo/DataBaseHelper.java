@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Ziv_A on 2017/3/7.
@@ -12,17 +13,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(Context context) {
-        super(context, "daily", null, 1);
+        super(context, "db_cost", null, 1);
+        Log.e("ziv", "DataBaseHelper constructor");
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Sql语句之间使用“,”分割开
-        sqLiteDatabase.execSQL("create table if not exists cost(" +
-                "id integer primary key," +
-                "cost__title vachar," +
-                "cost_date vachar," +
-                "cost_money vachar)");
+        Log.e("ziv", "create dataBase");
+        sqLiteDatabase.execSQL("create table if not exists table_cost (" +
+                "_id integer primary key, " +
+                "cost_title varchar, " +
+                "cost_date varchar, " +
+                "cost_money varchar)");
     }
 
     public void insertCost(CostBean costBean){
@@ -31,7 +34,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put("cost_title", costBean.costTitle);
         values.put("cost_date", costBean.costDate);
         values.put("cost_money", costBean.costMoney);
-        database.insert("cost", null, values);
+        database.insert("table_cost", null, values);
     }
 
     /**
@@ -41,7 +44,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
         //String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy
-        return database.query("cost", null, null, null, null, null, "cost_date " + "ASC");//ASC代表顺序排列
+        return database.query("table_cost", null, null, null, null, null, "cost_date " + "ASC");//ASC代表顺序排列
     }
 
     /**
@@ -49,7 +52,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public void deleteAllData(){
         SQLiteDatabase database = getWritableDatabase();
-        database.delete("cost", null, null);
+        database.delete("table_cost", null, null);
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
