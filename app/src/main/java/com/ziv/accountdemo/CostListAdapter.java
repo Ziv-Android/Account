@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
+ * 列表数据适配器
+ *
  * Created by Ziv_A on 2017/3/4.
  */
 

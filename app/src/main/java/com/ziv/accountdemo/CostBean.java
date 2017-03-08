@@ -1,6 +1,8 @@
 package com.ziv.accountdemo;
 
 /**
+ * 花费条目信息
+ *
  * Created by Ziv_A on 2017/3/4.
  */
 

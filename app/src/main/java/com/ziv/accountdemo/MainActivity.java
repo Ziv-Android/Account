@@ -1,22 +1,35 @@
 package com.ziv.accountdemo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 记账Demo实现，主要功能：
+ * 1 数据List显示
+ * 2 数据添加
+ * 3 数据保存数据库
+ * 4 图表统计显示(第三方库)
+ */
 public class MainActivity extends AppCompatActivity {
     private List<CostBean> mCostBeanList;
     private DataBaseHelper mDataBaseHelper;
+    private CostListAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +43,36 @@ public class MainActivity extends AppCompatActivity {
         mCostBeanList = new ArrayList<>();
 
         initCostData();
-        CostListAdapter mAdapter = new CostListAdapter(this,mCostBeanList);
+        mAdapter = new CostListAdapter(this, mCostBeanList);
         costList.setAdapter(mAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                View inflate = inflater.inflate(R.layout.new_cost_data, null);
+                final EditText title = (EditText) inflate.findViewById(R.id.et_cost_title);
+                final EditText money = (EditText) inflate.findViewById(R.id.et_cost_money);
+                final DatePicker date = (DatePicker) inflate.findViewById(R.id.dp_cost_data);
+                builder.setView(inflate);
+                builder.setTitle("New Cost");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        // 保存数据
+                        CostBean costBean = new CostBean();
+                        costBean.costTitle = title.getText().toString().trim();
+                        costBean.costMoney = money.getText().toString().trim();
+                        costBean.costDate = date.getYear() + "-" + (date.getMonth() - 1) + "-" + date.getDayOfMonth();
+                        mDataBaseHelper.insertCost(costBean);
+                        mCostBeanList.add(costBean);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.create().show();
             }
         });
     }
@@ -47,18 +81,9 @@ public class MainActivity extends AppCompatActivity {
      * 测试数据
      */
     private void initCostData() {
-        mDataBaseHelper.deleteAllData();
-        for (int i = 0; i < 6; i++) {
-            CostBean costBean = new CostBean();
-            costBean.costTitle = i + " Others";
-            costBean.costDate = "13-14";
-            costBean.costMoney = "100";
-//            mCostBeanList.add(costBean);
-            mDataBaseHelper.insertCost(costBean);
-        }
         Cursor cursor = mDataBaseHelper.getAllCostData();
         if (cursor != null) {
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 CostBean costBean = new CostBean();
                 costBean.costTitle = cursor.getString(cursor.getColumnIndex("cost_title"));
                 costBean.costDate = cursor.getString(cursor.getColumnIndex("cost_date"));
@@ -84,7 +109,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete) {
+            // 清空所有数据
+            mCostBeanList.clear();
+            mAdapter.notifyDataSetChanged();
+            mDataBaseHelper.deleteAllData();
             return true;
         }
 

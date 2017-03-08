@@ -8,10 +8,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
+ * 数据库辅助
+ *
  * Created by Ziv_A on 2017/3/7.
  */
 
 public class DataBaseHelper extends SQLiteOpenHelper {
+
+    private static final String COST_TITLE = "cost_title";
+    private static final String COST_DATE = "cost_date";
+    private static final String COST_MONEY = "cost_money";
+    private static final String TABLE_COST = "table_cost";
+
     public DataBaseHelper(Context context) {
         super(context, "db_cost", null, 1);
         Log.e("ziv", "DataBaseHelper constructor");
@@ -31,10 +39,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void insertCost(CostBean costBean){
         SQLiteDatabase database = getWritableDatabase();// 获取数据库对象
         ContentValues values = new ContentValues();// 键值对
-        values.put("cost_title", costBean.costTitle);
-        values.put("cost_date", costBean.costDate);
-        values.put("cost_money", costBean.costMoney);
-        database.insert("table_cost", null, values);
+        values.put(COST_TITLE, costBean.costTitle);
+        values.put(COST_DATE, costBean.costDate);
+        values.put(COST_MONEY, costBean.costMoney);
+        database.insert(TABLE_COST, null, values);
     }
 
     /**
@@ -44,7 +52,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Cursor getAllCostData(){
         SQLiteDatabase database = getWritableDatabase();
         //String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy
-        return database.query("table_cost", null, null, null, null, null, "cost_date " + "ASC");//ASC代表顺序排列
+        return database.query(TABLE_COST, null, null, null, null, null, COST_DATE + " ASC");//ASC代表顺序排列
     }
 
     /**
@@ -52,7 +60,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
      */
     public void deleteAllData(){
         SQLiteDatabase database = getWritableDatabase();
-        database.delete("table_cost", null, null);
+        database.delete(TABLE_COST, null, null);
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {

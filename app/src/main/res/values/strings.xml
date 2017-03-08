@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">AccountDemo</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_delete">Clear</string>
 </resources>
