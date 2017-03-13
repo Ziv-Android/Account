@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AccountDemo</string>
     <string name="action_delete">Clear</string>
+    <string name="action_charts">Charts</string>
 </resources>
